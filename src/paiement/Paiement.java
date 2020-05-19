@@ -1,7 +1,7 @@
 package paiement;
 
 import java.util.Date;
-
+//
 public class Paiement {
     String idPaiement;
     double montant ;
