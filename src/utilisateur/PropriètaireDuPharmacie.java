@@ -1,8 +1,15 @@
 package utilisateur;
 
-public class PropriètaireDuPharmacie extends Utilisateur {
+import produit.Produit;
 
-    public PropriètaireDuPharmacie(String id, String prénom, String nom, String email, String téléphone, String genre) {
+import java.util.List;
+
+public class PropriètaireDuPharmacie extends Utilisateur {
+    List<Produit> listeProduitAjouté;
+
+    public PropriètaireDuPharmacie(String id, String prénom, String nom, String email, String téléphone, String genre
+            ,List<Produit> listeProduitAjouté) {
         super(id, prénom, nom, email, téléphone, genre);
+        this.listeProduitAjouté=listeProduitAjouté;
     }
 }
