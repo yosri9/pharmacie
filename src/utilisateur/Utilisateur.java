@@ -86,7 +86,7 @@ public abstract class Utilisateur {
         if (!Administrateur.listeProduitAjouté.isEmpty()) {
             for (Produit produit : listeProduitAjouté
             ) {
-                System.out.println(produit.getNom());
+                System.out.println(produit.getTitre());
 
             }
         } else {

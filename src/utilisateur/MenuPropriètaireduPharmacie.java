@@ -129,12 +129,16 @@ public class MenuPropriètaireduPharmacie extends MenuAdministrateur {
         String nomProduit = scanner.next();
         for (Produit produit : Administrateur.listeProduitAjouté
         ) {
-            if (produit.getNom().equals(nomProduit)) {
+            System.out.println("t3ada1");
+
+            if (produit.getTitre()==(nomProduit)) {
+                System.out.println("t3ada");
                 return produit;
             }
         }
-        System.out.println("le produit n existe pas déja");
-
+        System.out.println("le produit n'existe pas déja");
+        listerChoixGerant();
+        choisirChoixGerant();
         return null;
     }
 

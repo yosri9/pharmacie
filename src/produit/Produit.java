@@ -44,9 +44,59 @@ public class Produit {
 
     protected Produit produit;
 
+     public int getId() {
+         return id;
+     }
 
+     public void setId(int id) {
+         this.id = id;
+     }
 
-    public double getBuyPrice() {
+     public String getTitre() {
+         return titre;
+     }
+
+     public void setTitre(String titre) {
+         this.titre = titre;
+     }
+
+     public String getDescription() {
+         return description;
+     }
+
+     public void setDescription(String description) {
+         this.description = description;
+     }
+
+     public List<Image> getImages() {
+         return images;
+     }
+
+     public void setImages(List<Image> images) {
+         this.images = images;
+     }
+
+     public void setCategories(List<Categorie> categories) {
+         this.categories = categories;
+     }
+
+     public Date getExpiration() {
+         return expiration;
+     }
+
+     public void setExpiration(Date expiration) {
+         this.expiration = expiration;
+     }
+
+     public Produit getProduit() {
+         return produit;
+     }
+
+     public void setProduit(Produit produit) {
+         this.produit = produit;
+     }
+
+     public double getBuyPrice() {
         return this.produit.buyPrice;
     }
 
@@ -69,6 +119,8 @@ public class Produit {
     public void setStock(double stock) {
         this.produit.stock = stock;
     }
+
+
 
 
 
