@@ -1,80 +1,173 @@
 package utilisateur;
 
-import demande.Demande;
+import chariot.Chariot;
+import commande.Commande;
+import paiement.Paiement;
 import produit.Medicament;
 import produit.Produit;
+import utilisateur.admin.Administrateur;
 
-import java.util.List;
-import java.util.Scanner;
+import java.text.SimpleDateFormat;
+import java.util.*;
+import java.util.concurrent.atomic.AtomicInteger;
 
-public class Client extends Utilisateur {
+public class Client extends Utilisateur implements identifiable {
+    private static final AtomicInteger count = new AtomicInteger(0);
 
-    Adresse adresseLivraison;
-    Adresse adresseFacturation;
-    List<Produit> listeSuivi;
-    List<Demande> Demandes;
+    public static Set<Client> listeClient = new HashSet<>();
+    private String adresseLivraison;
+    private Adresse adresseFacturation;
+    public Set<Produit> listeSuivi;
+    private Set<Commande> commandes;
+    private Chariot chariot;
 
-    public Client(
-            String id,
-            Adresse adresseLivraison,
-            Adresse adresseFacturation,
-            List<Produit> listeSuivi,
-            List<Demande> Demandes,
-            String prénom,
-            String nom,
-            String email,
-            String téléphone,
-
-            String genre) {
-        super(id, prénom, nom, email, téléphone, genre);
-        this.adresseFacturation = adresseFacturation;
+    public Client(String prénom, String nom, String email, String password,
+                  int téléphone, String genre, String adresseLivraison,
+                  Adresse adresseFacturation) {
+        super(prénom, nom, email, téléphone, genre, password);
         this.adresseLivraison = adresseLivraison;
+        this.adresseFacturation = adresseFacturation;
+        this.listeSuivi = new HashSet<>();
+        this.commandes = new HashSet<>();
+        this.id = count.incrementAndGet();
+        this.chariot = new Chariot();
+    }
+
+    @Override
+    public int getId() {
+        return this.id;
+    }
+
+    public Chariot getChariot() {
+        return chariot;
+    }
+
+    public static AtomicInteger getCount() {
+        return count;
+    }
+
+    public static Set<Client> getListeClient() {
+        return listeClient;
+    }
+
+    public static void setListeClient(Set<Client> listeClient) {
+        Client.listeClient = listeClient;
+    }
+
+    public String getAdresseLivraison() {
+        return adresseLivraison;
+    }
+
+    public void setAdresseLivraison(String adresseLivraison) {
+        this.adresseLivraison = adresseLivraison;
+    }
+
+    public Adresse getAdresseFacturation() {
+        return adresseFacturation;
+    }
+
+    public void setAdresseFacturation(Adresse adresseFacturation) {
+        this.adresseFacturation = adresseFacturation;
+    }
+
+    public Set<Produit> getListeSuivi() {
+        return listeSuivi;
+    }
+
+    public void setListeSuivi(Set<Produit> listeSuivi) {
         this.listeSuivi = listeSuivi;
-        this.Demandes=Demandes;
-
-
     }
+
+    public  Set<Commande> getCommandes() {
+        return this.commandes;
+    }
+
+    public void setCommandes(Set<Commande> commandes) {
+        this.commandes = commandes;
+    }
+
     protected static Scanner scanner = new Scanner(System.in);
-    Client client;
 
 
-    void ajouteràDemande(Demande demande) {
-        this.client.Demandes.add(demande);
+    public void ajouterCommande(Commande commande) {
+        this.commandes.add(commande);
     }
 
-    void ajouteràlisteSuivi(Produit produit) {
-        this.client.listeSuivi.add(produit);
+    public void ajouteràlisteSuivi(Produit produit) {
+        this.listeSuivi.add(produit);
     }
 
-    boolean existanceDemandeDansDemandes(Demande demande) {
-        return this.client.Demandes.contains(demande);
+    public boolean existanceCommandeDansCemandes(Commande commande) {
+        return this.commandes.contains(commande);
     }
 
-    boolean existanceProduitDansListeSuivi(Produit produit) {
-        return this.client.listeSuivi.contains(produit);
+    public boolean existanceProduitDansListeSuivi(Produit produit) {
+        return this.listeSuivi.contains(produit);
     }
 
-    boolean supprimerProduitdeListeSuivi(Produit produit) {
-        return this.client.listeSuivi.remove(produit);
+    public void supprimerProduitdeListeSuivi(Produit produit) {
+        this.listeSuivi.remove(produit);
     }
+
+    public void ajouterProduitauChariot(Map<Produit, Double> produitQuantité) {
+        ;
+        this.chariot.getChariot().add(produitQuantité);
+    }
+
+    public void supprimerProduitduChariot(Produit produit) {
+        ;
+        this.chariot.getChariot().remove(produit);
+    }
+
 
     public static String lireMedicament() {
         String med;
-        System.out.println("medicament acheté? ");
+        System.out.println("Donnez le nom du medicament pour voir ses maladies concernées ");
         med = scanner.nextLine();
-        scanner.nextLine();
         return med;
     }
 
-    public void afficherMaladie() {
+    public static void afficherMaladie() {
 
         String ch;
 
         ch = lireMedicament();
-        for (Medicament medicament :PropriètaireDuPharmacie.listeMedicamentsAjouté) {
-            if (medicament.getNom().equals(ch)) {
-                System.out.println(" ce medicament est pour:" + medicament.getMaladies());
+        if (!Administrateur.listeMedicamentsAjouté.isEmpty()) {
+            for (Medicament medicament : Administrateur.listeMedicamentsAjouté) {
+                if (medicament.getNom().equals(ch)) {
+                    if (!medicament.getMaladies().isEmpty()) {
+                        System.out.println(" ce medicament est pour:" + medicament.getMaladies());
+                    }
+                    System.out.println("Aucune information trouvé");
+                }
             }
         }
+        System.out.println("Aucun medicament existant");
+    }
+
+    public void commanderleChariot(Chariot chariot, String methodePaiement) {
+        for (Map<Produit, Double> produitQantité : chariot.getChariot()
+        ) {
+
+            for (Produit produit : produitQantité.keySet()
+            ) {
+                for (Double quantité : produitQantité.values()
+                ) {
+                    produit.setStock(produit.getStock() - quantité);
+                    produit.setQuantitéVendu(produit.getQuantitéVendu()+quantité);
+                }
+                Paiement paiement = new Paiement(chariot.montant(),
+                        new SimpleDateFormat("yyyyMMdd_HHmmss").format(Calendar.getInstance().getTime()),
+                        methodePaiement);
+                Commande commande = new Commande(this.chariot, this, paiement);
+                commande.setChariot(chariot);
+
+                ajouterCommande(commande);
+                chariot.viderChariot();
+            }
+
+
+        }
+
     }
 }
